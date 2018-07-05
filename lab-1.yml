@@ -1,0 +1,99 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-1
+  labels:
+    app: web-1
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+    ports:
+    - containerPort: 8081
+    volumeMounts:
+      - name: config-volume
+        mountPath: /etc/nginx
+  volumes:
+    - name: config-volume
+      configMap:
+        name: nginx-1-config    
+  
+---
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-2
+  labels:
+    app: web-2
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+    ports:
+    - containerPort: 8082
+    volumeMounts:
+      - name: config-volume
+        mountPath: /etc/nginx
+  volumes:
+    - name: config-volume
+      configMap:
+        name: nginx-2-config
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-1-web
+spec:
+  selector:
+    app: web-1
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8081
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-2-web
+spec:
+  selector:
+    app: web-2
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8082
+
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-1-config
+data:
+  nginx.conf: |
+    server {
+    location / {
+        listen      8081;
+        return 200 "<h1>Imagine that this is front-end</h2>";
+      }
+    }
+
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-2-config
+data:
+  nginx.conf: |
+    server {
+    location / {
+        listen      8082;
+        return 200 "<h1>Imagine that this is back-end</h2>";
+      }
+    }
