@@ -8,8 +8,11 @@ spec:
   containers:
   - name: nginx
     image: nginx
+    command: ["/bin/sh"]
+    args: ["yum -y update && yum install -y curl"]
     ports:
-    - containerPort: 8081
+    - name: nginx-1-port
+      containerPort: 8081
     volumeMounts:
       - name: config-volume
         mountPath: /etc/nginx
@@ -30,8 +33,11 @@ spec:
   containers:
   - name: nginx
     image: nginx
+    command: ["/bin/sh"]
+    args: ["yum -y update && yum install -y curl"]
     ports:
-    - containerPort: 8082
+    - name: nginx-2-port
+      containerPort: 8082
     volumeMounts:
       - name: config-volume
         mountPath: /etc/nginx
@@ -52,7 +58,7 @@ spec:
   ports:
   - protocol: TCP
     port: 80
-    targetPort: 8081
+    targetPort: nginx-1-port
 
 ---
 
@@ -66,7 +72,7 @@ spec:
   ports:
   - protocol: TCP
     port: 80
-    targetPort: 8082
+    targetPort: nginx-2-port
 
 ---
 
