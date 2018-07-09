@@ -17,17 +17,8 @@ metadata:
 spec:
   containers:
   - name: mysql-client
-    image: mysql
-    lifecycle:
-      postStart:
-        exec:
-          command: ["/bin/sh", "-c", "apt-get update -y && apt-get install -y git"]
+    image: sergiy1202/mysql_client_git
     env:
-        - name: MYSQL_ROOT_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: mysql-password
-              key: password
         - name: PASSWORD
           valueFrom:
             secretKeyRef:
@@ -49,7 +40,7 @@ metadata:
 spec:
   containers:
   - name: mysql-server
-    image: mysql
+    image: mysql/mysql-server
     env:
         - name: MYSQL_ROOT_PASSWORD
           valueFrom:
